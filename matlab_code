@@ -1,0 +1,77 @@
+% Parameters
+num_mics = 6;                % Number of microphones
+radius = 1.5;                % Radius of microphone array in meters (can be increased)
+sound_speed = 343;           % Speed of sound in air (m/s)
+fs = 96000;                  % Increased sampling frequency for better TDOA resolution
+source_distance = 100;        % Increased distance of the source (meters)
+source_angle = 10;           % Source angle in degrees
+f_signal = 1500;             % Frequency of the sound source (Hz)
+duration = 1;                % Duration of the sound signal (seconds)
+
+% Microphone positions (circular array)
+theta = linspace(0, 2*pi, num_mics + 1); % Angles of microphones
+theta = theta(1:end-1); % Remove the last redundant point
+mic_positions = radius * [cos(theta); sin(theta)];
+
+% Sound source position (in polar coordinates)
+source_x = source_distance * cosd(source_angle); % Source at increased distance
+source_y = source_distance * sind(source_angle);
+source_position = [source_x; source_y];
+
+% Time delays calculation using TDOA (with increased source distance)
+distances = sqrt(sum((mic_positions - source_position).^2)); % Distance from source to each mic
+time_delays = distances / sound_speed; % Time delays in seconds
+samples_delay = round(time_delays * fs); % Convert to sample delays
+
+% Generate a test sound signal (simple sine wave)
+t = 0:1/fs:duration-1/fs;
+sound_signal = sin(2 * pi * f_signal * t);
+
+% Simulate the received signals at each microphone with TDOA
+received_signals = zeros(num_mics, length(t));
+for i = 1:num_mics
+    received_signals(i, samples_delay(i) + 1:end) = sound_signal(1:end-samples_delay(i));
+end
+
+% Beamforming: Sum signals with phase alignment (delay compensation)
+beamformed_signal = zeros(1, length(t));
+for i = 1:num_mics
+    aligned_signal = circshift(received_signals(i, :), -samples_delay(i));
+    beamformed_signal = beamformed_signal + aligned_signal;
+end
+
+% Estimate direction using beamforming (Power spectrum analysis)
+angles = 0:1:360;
+power_spectrum = zeros(1, length(angles));
+for i = 1:length(angles)
+    beam_angle = angles(i);
+    mic_delays = sqrt(sum((mic_positions - [source_distance * cosd(beam_angle); source_distance * sind(beam_angle)]).^2)) / sound_speed;
+    sample_delays = round(mic_delays * fs);
+    
+    aligned_sum = zeros(1, length(t));
+    for j = 1:num_mics
+        aligned_signal = circshift(received_signals(j, :), -sample_delays(j));
+        aligned_sum = aligned_sum + aligned_signal;
+    end
+    power_spectrum(i) = sum(aligned_sum.^2); % Power at each angle
+end
+
+% Find the estimated angle
+[~, estimated_angle_idx] = max(power_spectrum);
+estimated_angle = angles(estimated_angle_idx);
+
+% Display the result
+fprintf('Actual source angle: %.2f degrees\n', source_angle);
+fprintf('Estimated source angle with increased distance: %.2f degrees\n', estimated_angle);
+
+% Plot the results
+figure;
+subplot(2,1,1);
+plot(angles, power_spectrum);
+title('Beamforming Power Spectrum');
+xlabel('Angle (degrees)');
+ylabel('Power');
+
+subplot(2,1,2);
+polarplot(deg2rad(angles), power_spectrum);
+title('Beamforming Polar Plot');
