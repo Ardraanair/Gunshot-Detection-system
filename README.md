@@ -10,10 +10,9 @@ This repository contains the project files and design flow for the **Microphone 
 
 ## 📁 Files and Components
 
-### `fpga_audio_processing.v`
-- Core logic implemented for signal filtering and delay estimation using **FPGA**.
-- Computes **TDOA (Time Difference of Arrival)** to determine angle.
-
+### `matlab_code`
+- code used for simalation
+  
 ### `mic_array_simulation.m`
 - MATLAB simulation for microphone array geometry and signal modeling.
 - Plots sound wave propagation and delay curves.
@@ -22,9 +21,6 @@ This repository contains the project files and design flow for the **Microphone 
 - Test audio used for system evaluation.
 - Used in simulations to verify DoA estimation algorithms.
 
-### `direction_display_ui.fig`
-- A basic UI mockup in Figma.
-- Illustrates how direction of the gunshot is displayed in real-time.
 
 ### `SIH2024_IDEA_Presentation`
 - ppt
