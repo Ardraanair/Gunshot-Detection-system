@@ -26,6 +26,8 @@ This repository contains the project files and design flow for the **Microphone 
 - A basic UI mockup in Figma.
 - Illustrates how direction of the gunshot is displayed in real-time.
 
+### `SIH2024_IDEA_Presentation`
+- ppt
 ---
 
 ## 🔧 Technologies Used
