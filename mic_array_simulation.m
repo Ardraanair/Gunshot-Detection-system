@@ -6,22 +6,22 @@
 % Clear workspace and figures
 clear; close all; clc;
 
-% Define image file paths
+% Define JPEG image file paths
 imageFiles = {
-    'image1.png',
-    'image2.png',
-    'image3.png',
-    'image4.png',
-    'image5.png'
+    'image1.jpeg',
+    'image2.jpeg',
+    'image3.jpeg',
+    'image4.jpeg',
+    'image5.jpeg'
 };
 
-% File IDs from upload
+% File paths where images were saved (now in .jpeg format)
 uploadedFilePaths = {
-    '/mnt/data/image.png',      % file-MV7gFTDko8VFtBhy5A1NH5
-    '/mnt/data/image.png',      % file-TrDAvwGYc5NPefZdAd9D2a
-    '/mnt/data/image.png',      % file-KEtKcYFX9N2HTggzMReev8
-    '/mnt/data/image.png',      % file-MVgsrYSK7j1F23S4Mmv6Ly
-    '/mnt/data/image.png'       % file-Hz3hPQ7b2725GTPoXfMR2j
+    '/mnt/data/image1.jpeg',
+    '/mnt/data/image2.jpeg',
+    '/mnt/data/image3.jpeg',
+    '/mnt/data/image4.jpeg',
+    '/mnt/data/image5.jpeg'
 };
 
 % Display all images in separate subplots
@@ -31,6 +31,10 @@ for i = 1:length(uploadedFilePaths)
     subplot(2, 3, i);
     imshow(img);
     title(sprintf('Image %d', i));
+end
+
+tiledlayout('flow'); % Optional for better layout management
+
 end
 
 tiledlayout('flow'); % Optional for better layout management
